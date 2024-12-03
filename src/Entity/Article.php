@@ -9,7 +9,16 @@ use App\Repository\ArticleRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
-#[ApiResource()] //annotations ou attributs en php 8 pour l'API
+
+#[ApiResource(
+    normalizationContext: ['groups' => ['read:collection']], //précision du groups et son nom
+    
+    // itemOperations: [
+    //     'get' => [
+    //         'normalization_context' => ['groups' => ['read:collection', 'read:item']],
+    //     ],
+    // ]
+)] //annotations ou attributs en php 8 pour l'API
 
 class Article
 {
@@ -17,22 +26,27 @@ class Article
     #[ORM\GeneratedValue]
     #[ORM\Column]
 
-    #[Groups()]
+    #[Groups(['read:collection'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read:collection'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read:collection'])]
     private ?string $slug = null;
-
+    
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['read:collection'])]
     private ?string $content = null;
 
     #[ORM\Column]
+    #[Groups(['read:collection'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
+    #[Groups(['read:collection'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'articles')]
